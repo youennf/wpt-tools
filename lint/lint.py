@@ -107,6 +107,11 @@ class CRRegexp(Regexp):
     pattern = "\r$"
     error = "CR AT EOL"
 
+class SetTimeoutRegexp(Regexp):
+    pattern = "setTimeout\s*\("
+    error = "SET TIMEOUT"
+    file_extensions = [".html", ".htm", ".js", ".xht", ".html", ".svg"]
+
 class W3CTestOrgRegexp(Regexp):
     pattern = "w3c\-test\.org"
     error = "W3C-TEST.ORG"
@@ -120,6 +125,7 @@ regexps = [item() for item in
            [TrailingWhitespaceRegexp,
             TabsRegexp,
             CRRegexp,
+            SetTimeoutRegexp,
             W3CTestOrgRegexp,
             PrintRegexp]]
 
