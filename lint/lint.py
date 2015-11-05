@@ -1,8 +1,8 @@
-import os
-import subprocess
-import re
-import sys
 import fnmatch
+import os
+import re
+import subprocess
+import sys
 
 from collections import defaultdict
 
@@ -24,11 +24,9 @@ def git(command, *args):
     except subprocess.CalledProcessError:
         raise
 
-
 def iter_files():
     for item in git("ls-tree", "-r", "--name-only", "HEAD").split("\n"):
         yield item
-
 
 def check_path_length(path):
     if len(path) + 1 > 150:
@@ -142,7 +140,7 @@ def check_regexp_line(path, f):
     for i, line in enumerate(f):
         for regexp in applicable_regexps:
             if regexp.search(line):
-                errors.append((regexp.error, "%s line %i" % (path, i+1), i+1))
+                errors.append((regexp.error, "%s:%s" % (path, i + 1), i + 1))
 
     return errors
 
@@ -173,7 +171,8 @@ def check_parsed(path, f):
             errors.append(("MULTIPLE-TESTHARNESS",
                            "%s more than one <script src='/resources/testharness.js'>" % path, None))
 
-        testharnessreport_nodes = source_file.root.findall(".//{http://www.w3.org/1999/xhtml}script[@src='/resources/testharnessreport.js']")
+        testharnessreport_nodes = source_file.root.findall(
+            ".//{http://www.w3.org/1999/xhtml}script[@src='/resources/testharnessreport.js']")
         if not testharnessreport_nodes:
             errors.append(("MISSING-TESTHARNESSREPORT",
                            "%s missing <script src='/resources/testharnessreport.js'>" % path, None))
@@ -223,7 +222,7 @@ def check_parsed(path, f):
 
 def output_errors(errors):
     for error_type, error, line_number in errors:
-        print "%s: %s" % (error_type, error)
+        print "%s	%s" % (error, error_type)
 
 def output_error_count(error_count):
     if not error_count:
@@ -232,7 +231,7 @@ def output_error_count(error_count):
     by_type = " ".join("%s: %d" % item for item in error_count.iteritems())
     count = sum(error_count.values())
     if count == 1:
-        print "There was 1 error (%s)" % (by_type,)
+        print "There was 1 error (%s)" % by_type
     else:
         print "There were %d errors (%s)" % (count, by_type)
 
