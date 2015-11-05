@@ -173,8 +173,7 @@ def check_parsed(path, f):
             errors.append(("MULTIPLE-TESTHARNESS",
                            "%s more than one <script src='/resources/testharness.js'>" % path, None))
 
-        testharnessreport_nodes = source_file.root.findall(
-            ".//{http://www.w3.org/1999/xhtml}script[@src='/resources/testharnessreport.js']")
+        testharnessreport_nodes = source_file.root.findall(".//{http://www.w3.org/1999/xhtml}script[@src='/resources/testharnessreport.js']")
         if not testharnessreport_nodes:
             errors.append(("MISSING-TESTHARNESSREPORT",
                            "%s missing <script src='/resources/testharnessreport.js'>" % path, None))
