@@ -24,9 +24,11 @@ def git(command, *args):
     except subprocess.CalledProcessError:
         raise
 
+
 def iter_files():
     for item in git("ls-tree", "-r", "--name-only", "HEAD").split("\n"):
         yield item
+
 
 def check_path_length(path):
     if len(path) + 1 > 150:
