@@ -1,8 +1,8 @@
-import fnmatch
 import os
-import re
 import subprocess
+import re
 import sys
+import fnmatch
 
 from collections import defaultdict
 
