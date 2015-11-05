@@ -231,7 +231,7 @@ def output_error_count(error_count):
     by_type = " ".join("%s: %d" % item for item in error_count.iteritems())
     count = sum(error_count.values())
     if count == 1:
-        print "There was 1 error (%s)" % by_type
+        print "There was 1 error (%s)" % (by_type,)
     else:
         print "There were %d errors (%s)" % (count, by_type)
 
