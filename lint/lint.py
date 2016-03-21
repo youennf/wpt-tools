@@ -43,6 +43,12 @@ def all_git_paths():
     for item in git("ls-tree", "-r", "--name-only", "HEAD").split("\n"):
         yield item
 
+def check_clashing_filenames(repo_root, files):
+    paths = [os.path.splitext(path)[0] for path in files]
+    paths_set = set(paths)
+    if len(paths_set) == len(paths):
+        return []
+    return [("CLASHING FILENAME", "Several tests have '/%s' as filename once extension is removed" % path, None) for path in paths_set if paths.count(path) > 1]
 
 def check_path_length(path):
     if len(path) + 1 > 150:
@@ -148,7 +154,7 @@ regexps = [item() for item in
             ConsoleRegexp,
             PrintRegexp]]
 
-def check_regexp_line(path, f):
+def check_regexp_line(path, f, test_files):
     errors = []
 
     applicable_regexps = [regexp for regexp in regexps if regexp.applies(path)]
@@ -160,8 +166,11 @@ def check_regexp_line(path, f):
 
     return errors
 
-def check_parsed(path, f):
+def check_parsed(path, f, test_files):
     source_file = SourceFile(repo_root, path, "/")
+
+    if source_file.is_test():
+        test_files.append(path)
 
     errors = []
 
@@ -275,6 +284,8 @@ def lint(paths):
             error_count[error_type] += 1
         return last
 
+    test_files = []
+
     for path in paths:
         abs_path = os.path.join(repo_root, path)
         if not os.path.exists(abs_path):
@@ -285,8 +296,10 @@ def lint(paths):
         if not os.path.isdir(abs_path):
             with open(abs_path) as f:
                 for file_fn in file_lints:
-                    last = run_lint(path, file_fn, last, f)
+                    last = run_lint(path, file_fn, last, f, test_files)
                     f.seek(0)
+
+    last = run_lint(repo_root, check_clashing_filenames , None, test_files);
 
     output_error_count(error_count)
     if error_count:

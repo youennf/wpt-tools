@@ -278,6 +278,9 @@ class SourceFile(object):
         graph (i.e. if it contains any <link rel=[mis]match>"""
         return bool(self.references)
 
+    def is_test(self):
+        return self.name_is_manual or self.name_is_worker or self.name_is_webdriver or self.content_is_testharness or self.content_is_ref_node
+
     def manifest_items(self):
         """List of manifest items corresponding to the file. There is typically one
         per test, but in the case of reftests a node may have corresponding manifest
@@ -313,3 +316,4 @@ class SourceFile(object):
             rv = []
 
         return rv
+
